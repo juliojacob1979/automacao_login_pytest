@@ -1,4 +1,5 @@
 pytest
+pytest-bdd
 requests
 pytest-html
 faker

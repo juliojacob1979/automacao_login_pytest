@@ -8,6 +8,10 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from pages.login_page import LoginPage
+from pytest_bdd import scenarios, given, when, then, parsers
+
+# Conecta o arquivo feature
+scenarios('../features/login.feature')
 
 # Fixture para abrir/fechar o navegador
 @pytest.fixture
@@ -38,46 +42,35 @@ def driver_setup():
     driver.quit()
 
 
-# ---------- Testes Positivos ----------
-@pytest.mark.positivo
-def test_login_sucesso(driver_setup):
+# ---------- Fixture da página ----------
+@pytest.fixture
+def login_page(driver_setup):
     page = LoginPage(driver_setup)
     page.load()
-    page.login("student", "Password123")
-    assert "Logged In Successfully" in page.get_success_message()
+    return page
 
+# ---------- Steps ----------
+@given("que o usuario esta na pagina de login")
+def step_given_login_page(login_page):
+    # Só chama a fixture, não precisa retornar nada
+    pass
 
-# ---------- Testes Negativos ----------
-@pytest.mark.negativo
-def test_login_usuario_invalido(driver_setup):
-    page = LoginPage(driver_setup)
-    page.load()
-    page.login("invalid_user", "Password123")
-    assert "Your username is invalid!" in page.get_error_message()
+@when(parsers.cfparse('ele informa usuario "{usuario}" e senha "{senha}"'))
+def step_when_login(login_page, usuario, senha):
+    # Converte "<vazio>" para string vazia
+    if usuario == "<vazio>":
+        usuario = ""
+    if senha == "<vazio>":
+        senha = ""
+    login_page.login(usuario, senha)
 
+@then(parsers.parse('ele deve ver a mensagem de sucesso "{mensagem}"'))
+def step_then_sucesso(login_page, mensagem):
+    assert mensagem in login_page.get_success_message()
 
-@pytest.mark.negativo
-def test_login_senha_invalida(driver_setup):
-    page = LoginPage(driver_setup)
-    page.load()
-    page.login("student", "wrongpass")
-    assert "Your password is invalid!" in page.get_error_message()
-
-
-@pytest.mark.negativo
-def test_login_usuario_vazio(driver_setup):
-    page = LoginPage(driver_setup)
-    page.load()
-    page.login("", "Password123")
-    assert "Your username is invalid!" in page.get_error_message()
-
-
-@pytest.mark.negativo
-def test_login_senha_vazia(driver_setup):
-    page = LoginPage(driver_setup)
-    page.load()
-    page.login("student", "")
-    assert "Your password is invalid!" in page.get_error_message()
+@then(parsers.parse('ele deve ver a mensagem de erro "{mensagem}"'))
+def step_then_erro(login_page, mensagem):
+    assert mensagem in login_page.get_error_message()
 
 
 
