@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.log
+
+# Virtual environment
+venv/
+.env/
+.env.*
+
+# Pytest cache
+.pytest_cache/
+
+# Reports
+reports/
+*.html
+
+# Selenium / WebDriver
+chromedriver
+geckodriver
+*.exe
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Outros
+*.mp4
+*.avi
+*.mov
+*.tmp
